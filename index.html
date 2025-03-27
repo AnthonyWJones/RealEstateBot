@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Real Estate Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 40px; }
+        #chatbox { width: 400px; height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; margin: auto; }
+        #userInput { width: 300px; padding: 10px; }
+        #sendBtn { padding: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Real Estate Chatbot</h1>
+    <div id="chatbox"></div>
+    <input type="text" id="userInput" placeholder="Ask me a real estate question...">
+    <button id="sendBtn">Send</button>
+
+    <script>
+        document.getElementById("sendBtn").addEventListener("click", function() {
+            let userInput = document.getElementById("userInput").value;
+            let chatbox = document.getElementById("chatbox");
+
+            // Display user message
+            chatbox.innerHTML += `<p><strong>You:</strong> ${userInput}</p>`;
+
+            // Send message to backend
+            fetch("http://127.0.0.1:8000/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: userInput })
+            })
+            .then(response => response.json())
+            .then(data => {
+                chatbox.innerHTML += `<p><strong>Bot:</strong> ${data.reply}</p>`;
+                document.getElementById("userInput").value = ""; // Clear input
+            });
+        });
+    </script>
+</body>
+</html>
